@@ -27,7 +27,45 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            background: "none",
+            padding: 0,
+            margin: 0
+          }}
+        >
+          <img
+            src="/logo.png"
+            alt="mInvoice logo"
+            style={{
+              width: "220px",
+              height: "auto",
+              opacity: 0.85,
+              filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.08))",
+              background: "none",
+              padding: 0,
+              margin: 0,
+              marginBottom: "12px"
+            }}
+          />
+        </div>
         {children}
+        <footer
+          style={{
+            width: "100%",
+            textAlign: "center",
+            fontSize: "1rem",
+            color: "#888",
+            marginTop: "32px",
+            marginBottom: "12px",
+            letterSpacing: "0.01em"
+          }}
+        >
+          Made with <span style={{color: "#e25555"}}>❤️</span> by Mehul Panchal
+        </footer>
       </body>
     </html>
   );

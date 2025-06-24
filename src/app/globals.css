@@ -17,21 +17,6 @@
   --font-heading: 'Poppins', Arial, Helvetica, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #e5e7eb;
-    --primary: #3b82f6;
-    --primary-hover: #2563eb;
-    --accent-teal: #2dd4bf;
-    --accent-amber: #fbbf24;
-    --input-bg: #1f2937;
-    --input-border: #374151;
-    --input-focus-border: var(--primary);
-    --error-color: #ef4444;
-    --success-color: #22c55e;
-  }
-}
 
 body {
   background: var(--background);
