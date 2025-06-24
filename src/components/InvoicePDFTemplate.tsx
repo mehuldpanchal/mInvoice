@@ -4,7 +4,7 @@ import type { InvoiceItem } from "./InvoiceItemsTable";
 import type { InvoiceColumn } from "./ColumnSelector";
 
 interface CompanyDetails {
-  logo?: string;
+  logo: string | null;
   companyName: string;
   companyAddress: string;
   city: string;
@@ -170,7 +170,8 @@ const InvoicePDFTemplate = ({
         <Text style={styles.header}>INVOICE</Text>
 
         <View style={styles.section}>
-          {companyDetails.logo && (
+          {companyDetails.logo && companyDetails.logo !== null && (
+            // eslint-disable-next-line jsx-a11y/alt-text
             <Image
               src={companyDetails.logo}
               style={styles.logo}

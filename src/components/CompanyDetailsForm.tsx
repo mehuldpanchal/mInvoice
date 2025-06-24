@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import Image from "next/image";
 
-type CompanyDetails = {
-  logo: FileList;
+export interface CompanyDetails {
+  logo: FileList | null;
   companyName: string;
   companyAddress: string;
   city: string;
@@ -13,6 +14,10 @@ type CompanyDetails = {
   email: string;
   invoiceNumber: string;
   terms: string;
+}
+
+export type CompanyDetailsData = Omit<CompanyDetails, 'logo'> & {
+  logo: string | null;
 };
 
 type Props = {
@@ -24,7 +29,6 @@ const CompanyDetailsForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
     watch,
   } = useForm<CompanyDetails>({
@@ -46,10 +50,14 @@ const CompanyDetailsForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
         />
         {errors.logo && <span className="text-red-500 text-xs">{errors.logo.message}</span>}
         {logoFile && logoFile.length > 0 && (
-          <img
+          <Image
             src={URL.createObjectURL(logoFile[0])}
             alt="Logo Preview"
-            className="mt-2 h-16 object-contain"
+            className="mt-2 object-contain"
+            height={64}
+            width={128}
+            style={{ height: "4rem", width: "auto" }}
+            unoptimized
           />
         )}
       </div>
@@ -66,7 +74,7 @@ const CompanyDetailsForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
         <label className="block font-medium mb-1">Company Address</label>
         <input
           type="text"
-          {...register("companyAddress", { required: "Address is required" })}
+          {...register("companyAddress", { required: "Company Address is required" })}
           className="block w-full border rounded px-3 py-2"
         />
         {errors.companyAddress && <span className="text-red-500 text-xs">{errors.companyAddress.message}</span>}
@@ -94,7 +102,7 @@ const CompanyDetailsForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
           <label className="block font-medium mb-1">ZIP</label>
           <input
             type="text"
-            {...register("zip", { required: "ZIP is required" })}
+            {...register("zip", { required: "ZIP Code is required" })}
             className="block w-full border rounded px-3 py-2"
           />
           {errors.zip && <span className="text-red-500 text-xs">{errors.zip.message}</span>}

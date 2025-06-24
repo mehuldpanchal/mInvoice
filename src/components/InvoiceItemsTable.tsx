@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import type { InvoiceColumn } from "./ColumnSelector";
 
 export type InvoiceItem = {
@@ -34,7 +35,7 @@ const InvoiceItemsTable: React.FC<Props> = ({ columns, onSubmit, onPreview }) =>
   const deleteItem = (idx: number) => setItems(items.filter((_, i) => i !== idx));
   const duplicateItem = (idx: number) => setItems([...items.slice(0, idx + 1), { ...items[idx] }, ...items.slice(idx + 1)]);
 
-  const updateItem = (idx: number, field: keyof InvoiceItem, value: any) => {
+  const updateItem = (idx: number, field: keyof InvoiceItem, value: string | number) => {
     setItems(items.map((item, i) => (i === idx ? { ...item, [field]: value } : item)));
   };
 
@@ -146,7 +147,12 @@ const InvoiceItemsTable: React.FC<Props> = ({ columns, onSubmit, onPreview }) =>
                         className="bg-blue-600 hover:bg-blue-700 text-white p-1 rounded-md shadow-md transition"
                         aria-label="Duplicate item"
                       >
-                        <img width="24" height="24" src="https://img.icons8.com/material-rounded/24/duplicate.png" alt="duplicate"/>
+                        <Image
+                          width={24}
+                          height={24}
+                          src="https://img.icons8.com/material-rounded/24/duplicate.png"
+                          alt="duplicate"
+                        />
                       </button>
                       <button
                         type="button"
@@ -154,7 +160,12 @@ const InvoiceItemsTable: React.FC<Props> = ({ columns, onSubmit, onPreview }) =>
                         className="bg-red-600 hover:bg-red-700 text-white p-1 rounded-md shadow-md transition"
                         aria-label="Delete item"
                       >
-                        <img width="16" height="16" src="https://img.icons8.com/small/16/filled-trash.png" alt="filled-trash"/>
+                        <Image
+                          width={16}
+                          height={16}
+                          src="https://img.icons8.com/small/16/filled-trash.png"
+                          alt="filled-trash"
+                        />
                       </button>
                     </div>
                   </td>

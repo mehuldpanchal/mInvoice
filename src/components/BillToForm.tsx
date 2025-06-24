@@ -109,4 +109,5 @@ const BillToForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
   );
 };
 
+export type { BillToDetails };
 export default BillToForm;

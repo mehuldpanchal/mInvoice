@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import type { CompanyDetails, CompanyDetailsData } from "./CompanyDetailsForm";
+import type { BillToDetails } from "./BillToForm";
 import { pdf } from "@react-pdf/renderer";
 import InvoicePDFTemplate from "./InvoicePDFTemplate";
 import Stepper from "./Stepper";
@@ -18,14 +20,12 @@ const steps = [
 
 const MultiStepForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [companyDetails, setCompanyDetails] = useState<any>(null);
-  const [billToDetails, setBillToDetails] = useState<any>(null);
+  const [companyDetails, setCompanyDetails] = useState<CompanyDetailsData | null>(null);
+  const [billToDetails, setBillToDetails] = useState<BillToDetails | null>(null);
   const [selectedColumns, setSelectedColumns] = useState<InvoiceColumn[]>(
     columnOptions.filter((c) => c.defaultChecked).map((c) => c.key)
   );
   const [taxRate, setTaxRate] = useState<string>("");
-  const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([]);
-  const [subtotal, setSubtotal] = useState<number>(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const renderStep = () => {
@@ -33,25 +33,29 @@ const MultiStepForm: React.FC = () => {
       case 0:
         return (
           <CompanyDetailsForm
-            onSubmit={async (data) => {
+            onSubmit={async (data: CompanyDetails) => {
+              let logoUrl = '';
               if (data.logo && data.logo.length > 0) {
                 const file = data.logo[0];
-                const base64 = await new Promise<string>((resolve, reject) => {
+                logoUrl = await new Promise<string>((resolve, reject) => {
                   const reader = new FileReader();
                   reader.readAsDataURL(file);
                   reader.onload = () => resolve(reader.result as string);
                   reader.onerror = (error) => reject(error);
                 });
-                const newData = { ...data, logo: base64 };
-                setCompanyDetails(newData);
-              } else {
-                setCompanyDetails(data);
               }
+              setCompanyDetails({
+                ...data,
+                logo: logoUrl
+              });
               setCurrentStep(1);
             }}
             defaultValues={
               companyDetails
-                ? { ...companyDetails, logo: undefined }
+                ? {
+                    ...companyDetails,
+                    logo: null // Reset logo to null since we can't repopulate FileList
+                  } as Partial<CompanyDetails>
                 : undefined
             }
           />
@@ -71,7 +75,7 @@ const MultiStepForm: React.FC = () => {
                 setBillToDetails(data);
                 setCurrentStep(2);
               }}
-              defaultValues={billToDetails || undefined}
+              defaultValues={billToDetails ?? undefined}
             />
           </>
         );
@@ -99,8 +103,8 @@ const MultiStepForm: React.FC = () => {
         const generateInvoicePDF = async (items: InvoiceItem[], sub: number) => {
           const pdfDoc = (
             <InvoicePDFTemplate
-              companyDetails={companyDetails}
-              billToDetails={billToDetails}
+              companyDetails={companyDetails!}
+              billToDetails={billToDetails!}
               items={items}
               subtotal={sub}
               selectedColumns={selectedColumns}
@@ -140,14 +144,10 @@ const MultiStepForm: React.FC = () => {
             <InvoiceItemsTable
               columns={selectedColumns}
               onPreview={async (items, sub) => {
-                setInvoiceItems(items);
-                setSubtotal(sub);
                 const url = await generateInvoicePDF(items, sub);
                 setPreviewUrl(url);
               }}
               onSubmit={async (items, sub) => {
-                setInvoiceItems(items);
-                setSubtotal(sub);
                 const url = await generateInvoicePDF(items, sub);
   
                 // Trigger download

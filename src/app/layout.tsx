@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Image from "next/image";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,12 +38,12 @@ export default function RootLayout({
             margin: 0
           }}
         >
-          <img
+          <Image
             src="/logo.png"
             alt="mInvoice logo"
+            width={220}
+            height={60}
             style={{
-              width: "220px",
-              height: "auto",
               opacity: 0.85,
               filter: "drop-shadow(0 2px 8px rgba(0,0,0,0.08))",
               background: "none",
