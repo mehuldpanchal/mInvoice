@@ -297,21 +297,6 @@ const InvoicePDFTemplate = ({
             </Text>
           </View>
 
-          {/* Added alt attribute to Image for accessibility */}
-          {companyDetails.logo && (
-            <Image
-              src={companyDetails.logo}
-              style={styles.logo}
-            />
-          )}
-
-          {/* Added alt attribute to Image for accessibility */}
-          {companyDetails.logo && (
-            <Image
-              src={companyDetails.logo}
-              style={styles.logo}
-            />
-          )}
 
           <View style={[styles.billBox, styles.billBoxRight]}>
             <Text style={styles.billTitle}>Billed To:</Text>
