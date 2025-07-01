@@ -161,6 +161,20 @@ const styles = StyleSheet.create({
     width: "40%",
     alignSelf: "flex-end",
   },
+  termsTotalsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
+  termsContainer: {
+    marginTop: 20,
+    width: "60%",
+  },
+  termsContainerFullWidth: {
+    marginTop: 20,
+    width: "100%",
+    alignSelf: "flex-start",
+  },
   termsSection: {
     marginBottom: 10,
     alignSelf: "flex-start",
@@ -179,6 +193,27 @@ const styles = StyleSheet.create({
     minWidth: 80,
     textAlign: "right",
   },
+  totalsRowTotal: {
+    borderTopWidth: 2,
+    borderBottomWidth: 2,
+    borderColor: "#000",
+  },
+  totalsBorderTop: {
+    borderTopWidth: 1,
+    borderTopColor: "#000",
+  },
+  totalsBorderBottom: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
+  },
+  totalsLabelLarge: {
+    fontWeight: "bold",
+    fontSize: 14,
+  },
+  totalsValueLarge: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
   footer: {
     marginTop: 40,
     fontSize: 10,
@@ -196,6 +231,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 4,
+    backgroundColor: "#f0f4ff",
   },
   billBoxLeft: {
     marginRight: 10,
@@ -233,7 +269,7 @@ const InvoicePDFTemplate = ({
           <View style={styles.headerLeft}>
             <Text style={styles.invoiceTitle}>INVOICE</Text>
             <Text style={styles.invoiceInfo}>Invoice No # {companyDetails.invoiceNumber || ""}</Text>
-            <Text style={styles.invoiceInfo}>Invoice Date: {companyDetails.invoiceDate ? new Date(companyDetails.invoiceDate).toLocaleDateString() : ""}</Text>
+            <Text style={styles.invoiceInfo}>Invoice Date: {companyDetails.invoiceDate ? new Date(companyDetails.invoiceDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : ""}</Text>
           </View>
           <View style={styles.headerRight}>
             {companyDetails.logo && companyDetails.logo !== null && (
@@ -247,7 +283,7 @@ const InvoicePDFTemplate = ({
 
         <View style={styles.billSectionsContainer}>
           <View style={[styles.billBox, styles.billBoxLeft]}>
-            <Text style={styles.billTitle}>Billed By</Text>
+            <Text style={styles.billTitle}>Billed By:</Text>
             <Text style={styles.companyName}>{companyDetails.companyName}</Text>
             <Text style={styles.companyInfo}>{companyDetails.companyAddress}</Text>
             <Text style={styles.companyInfo}>
@@ -264,7 +300,7 @@ const InvoicePDFTemplate = ({
           </View>
 
           <View style={[styles.billBox, styles.billBoxRight]}>
-            <Text style={styles.billTitle}>Billed To</Text>
+            <Text style={styles.billTitle}>Billed To:</Text>
             <Text style={styles.companyName}>{billToDetails.clientCompanyName}</Text>
             <Text style={styles.companyInfo}>{billToDetails.clientCompanyAddress}</Text>
             <Text style={styles.companyInfo}>
@@ -324,55 +360,45 @@ const InvoicePDFTemplate = ({
           ))}
         </View>
 
-        <View style={styles.totalsContainer}>
-          <View style={styles.totalsRow}>
-            <Text style={styles.totalsLabel}>Subtotal</Text>
-            <Text style={styles.totalsValue}>{subtotal.toFixed(2)}</Text>
+        <View style={styles.termsTotalsContainer}>
+          <View style={styles.termsContainer}>
+            {companyDetails.terms && companyDetails.terms.trim() !== "" && (
+              <View style={styles.termsSection}>
+                <Text style={{ fontWeight: "bold", fontSize: 12, marginBottom: 4, textAlign: "left" }}>
+                  Terms & Conditions
+                </Text>
+                <Text style={{ fontSize: 10, textAlign: "left" }}>
+                  {companyDetails.terms.split("\n").map((line, idx) => (
+                    <Text key={idx} style={{ textAlign: "left" }}>
+                      {line}
+                      {"\n"}
+                    </Text>
+                  ))}
+                </Text>
+              </View>
+            )}
           </View>
-          {selectedColumns.includes("tax") && (
+          <View style={styles.totalsContainer}>
             <View style={styles.totalsRow}>
-              <Text style={styles.totalsLabel}>Tax ({(taxRate * 100).toFixed(2)}%)</Text>
-              <Text style={styles.totalsValue}>{taxDue.toFixed(2)}</Text>
+              <Text style={styles.totalsLabel}>Subtotal</Text>
+              <Text style={styles.totalsValue}>{subtotal.toFixed(2)}</Text>
             </View>
-          )}
-          <View style={styles.totalsRow}>
-            <Text style={styles.totalsLabel}>Total</Text>
-            <Text style={styles.totalsValue}>{total.toFixed(2)}</Text>
-          </View>
-        </View>
-
-        {comments.length > 0 && (
-          <View style={styles.section}>
-            <Text style={{ fontWeight: "bold", fontSize: 12, marginBottom: 6 }}>
-              Comments:
-            </Text>
-            {comments.map((comment, idx) => (
-              <Text key={idx} style={{ fontSize: 10, marginBottom: 4 }}>
-                {comment}
-              </Text>
-            ))}
-          </View>
-        )}
-
-        <View style={styles.totalsContainer}>
-          {companyDetails.terms && companyDetails.terms.trim() !== "" && (
-            <View style={styles.termsSection}>
-              <Text style={{ fontWeight: "bold", fontSize: 12, marginBottom: 4, textAlign: "left" }}>
-                Terms & Conditions
-              </Text>
-              <Text style={{ fontSize: 10, textAlign: "left" }}>
-                {companyDetails.terms.split("\n").map((line, idx) => (
-                  <Text key={idx} style={{ textAlign: "left" }}>
-                    {line}
-                    {"\n"}
-                  </Text>
-                ))}
-              </Text>
+            {selectedColumns.includes("tax") && (
+              <View style={styles.totalsRow}>
+                <Text style={styles.totalsLabel}>Tax ({(taxRate * 100).toFixed(2)}%)</Text>
+                <Text style={styles.totalsValue}>{taxDue.toFixed(2)}</Text>
+              </View>
+            )}
+            <View style={[styles.totalsRow, styles.totalsBorderTop, styles.totalsRowTotal]}>
+              <Text style={[styles.totalsLabel, styles.totalsLabelLarge]}>Total</Text>
+              <Text style={[styles.totalsValue, styles.totalsValueLarge]}>{total.toFixed(2)}</Text>
             </View>
-          )}
+            {/* Removed the thinner bottom border line */}
+          </View>
         </View>
 
         <Text style={styles.footer}>Thank you for your business!</Text>
+        <Text style={styles.footer}>This is an electronically generated document, no signature is required.</Text>
       </Page>
     </Document>
   );
