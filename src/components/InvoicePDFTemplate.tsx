@@ -34,7 +34,6 @@ interface InvoicePDFProps {
   subtotal: number;
   selectedColumns: InvoiceColumn[];
   taxRate?: number;
-  comments?: string[];
 }
 
 const styles = StyleSheet.create({
@@ -252,8 +251,7 @@ const InvoicePDFTemplate = ({
   items,
   subtotal,
   selectedColumns = [],
-  taxRate = 0,
-  comments = []
+  taxRate = 0
 }: InvoicePDFProps) => {
   if (!companyDetails || !billToDetails || !items) {
     return null;
@@ -298,6 +296,22 @@ const InvoicePDFTemplate = ({
               <Text style={{ fontWeight: "bold" }}>Phone: </Text>{companyDetails.phone}
             </Text>
           </View>
+
+          {/* Added alt attribute to Image for accessibility */}
+          {companyDetails.logo && (
+            <Image
+              src={companyDetails.logo}
+              style={styles.logo}
+            />
+          )}
+
+          {/* Added alt attribute to Image for accessibility */}
+          {companyDetails.logo && (
+            <Image
+              src={companyDetails.logo}
+              style={styles.logo}
+            />
+          )}
 
           <View style={[styles.billBox, styles.billBoxRight]}>
             <Text style={styles.billTitle}>Billed To:</Text>
