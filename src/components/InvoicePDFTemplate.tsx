@@ -14,6 +14,7 @@ interface CompanyDetails {
   email: string;
   invoiceNumber: string;
   terms: string;
+  invoiceDate: string;
 }
 
 interface BillToDetails {
@@ -44,6 +45,31 @@ const styles = StyleSheet.create({
     color: "#000",
     fontSize: 11,
   },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  headerLeft: {
+    flex: 1,
+  },
+  invoiceTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#4a6fa5",
+    marginBottom: 8,
+    textAlign: "left",
+  },
+  invoiceInfo: {
+    fontSize: 12,
+    marginBottom: 4,
+    textAlign: "left",
+  },
+  headerRight: {
+    width: 120,
+    height: 60,
+  },
   header: {
     fontSize: 24,
     fontWeight: "bold",
@@ -53,6 +79,20 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 20,
+  },
+  billSectionsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    alignItems: "flex-start"
+  },
+  companySection: {
+    flex: 1,
+    marginRight: 10,
+  },
+  billToSection: {
+    flex: 1,
+    marginLeft: 10,
   },
   companyInfo: {
     fontSize: 12,
@@ -121,6 +161,10 @@ const styles = StyleSheet.create({
     width: "40%",
     alignSelf: "flex-end",
   },
+  termsSection: {
+    marginBottom: 10,
+    alignSelf: "flex-start",
+  },
   totalsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -146,6 +190,24 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 10,
   },
+  billBox: {
+    flex: 1,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+  },
+  billBoxLeft: {
+    marginRight: 10,
+  },
+  billBoxRight: {
+    marginLeft: 10,
+  },
+  billTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
 });
 
 const InvoicePDFTemplate = ({
@@ -167,49 +229,60 @@ const InvoicePDFTemplate = ({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <Text style={styles.header}>INVOICE</Text>
-
-        <View style={styles.section}>
-          {companyDetails.logo && companyDetails.logo !== null && (
-            // eslint-disable-next-line jsx-a11y/alt-text
-            <Image
-              src={companyDetails.logo}
-              style={styles.logo}
-            />
-          )}
-          <Text style={styles.companyName}>
-            {companyDetails.companyName}
-          </Text>
-          <Text style={styles.companyInfo}>
-            {companyDetails.companyAddress}
-          </Text>
-          <Text style={styles.companyInfo}>
-            {companyDetails.city ? companyDetails.city + ", " : ""}
-            {companyDetails.state ? companyDetails.state + ", " : ""}
-            {companyDetails.zip ? companyDetails.zip : ""}
-          </Text>
-          <Text style={styles.companyInfo}>
-            {companyDetails.email} | {companyDetails.phone}
-          </Text>
-          <Text style={styles.companyInfo}>
-            Invoice Number: {companyDetails.invoiceNumber || ""}
-          </Text>
+        <View style={styles.headerContainer}>
+          <View style={styles.headerLeft}>
+            <Text style={styles.invoiceTitle}>INVOICE</Text>
+            <Text style={styles.invoiceInfo}>Invoice No # {companyDetails.invoiceNumber || ""}</Text>
+            <Text style={styles.invoiceInfo}>Invoice Date: {companyDetails.invoiceDate ? new Date(companyDetails.invoiceDate).toLocaleDateString() : ""}</Text>
+          </View>
+          <View style={styles.headerRight}>
+            {companyDetails.logo && companyDetails.logo !== null && (
+              <Image
+                src={companyDetails.logo}
+                style={styles.logo}
+              />
+            )}
+          </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={{ fontWeight: "bold", fontSize: 14, marginBottom: 6 }}>
-            Bill To:
-          </Text>
-          <Text style={styles.clientCompanyName}>{billToDetails.clientCompanyName}</Text>
-          <Text style={styles.billToInfo}>{billToDetails.clientCompanyAddress}</Text>
-          <Text style={styles.billToInfo}>
-            {billToDetails.city ? billToDetails.city + ", " : ""}
-            {billToDetails.state ? billToDetails.state + ", " : ""}
-            {billToDetails.zip || ""}
-          </Text>
-          <Text style={styles.billToInfo}>
-            {billToDetails.email} | {billToDetails.phone}
-          </Text>
+        <View style={styles.billSectionsContainer}>
+          <View style={[styles.billBox, styles.billBoxLeft]}>
+            <Text style={styles.billTitle}>Billed By</Text>
+            <Text style={styles.companyName}>{companyDetails.companyName}</Text>
+            <Text style={styles.companyInfo}>{companyDetails.companyAddress}</Text>
+            <Text style={styles.companyInfo}>
+              {companyDetails.city ? companyDetails.city + ", " : ""}
+              {companyDetails.state ? companyDetails.state + ", " : ""}
+              {companyDetails.zip ? companyDetails.zip : ""}
+            </Text>
+            <Text style={styles.companyInfo}>
+              <Text style={{ fontWeight: "bold" }}>Email: </Text>{companyDetails.email}
+            </Text>
+            <Text style={styles.companyInfo}>
+              <Text style={{ fontWeight: "bold" }}>Phone: </Text>{companyDetails.phone}
+            </Text>
+          </View>
+
+          <View style={[styles.billBox, styles.billBoxRight]}>
+            <Text style={styles.billTitle}>Billed To</Text>
+            <Text style={styles.companyName}>{billToDetails.clientCompanyName}</Text>
+            <Text style={styles.companyInfo}>{billToDetails.clientCompanyAddress}</Text>
+            <Text style={styles.companyInfo}>
+              {billToDetails.city ? billToDetails.city + ", " : ""}
+              {billToDetails.state ? billToDetails.state + ", " : ""}
+              {billToDetails.zip || ""}
+            </Text>
+            {billToDetails.email && (
+              <Text style={styles.companyInfo}>
+                <Text style={{ fontWeight: "bold" }}>Email: </Text>{billToDetails.email}
+              </Text>
+            )}
+            {billToDetails.phone && (
+              <Text style={styles.companyInfo}>
+                <Text style={{ fontWeight: "bold" }}>Phone: </Text>{billToDetails.phone}
+              </Text>
+            )}
+          </View>
         </View>
 
         <View style={styles.table}>
@@ -283,13 +356,13 @@ const InvoicePDFTemplate = ({
 
         <View style={styles.totalsContainer}>
           {companyDetails.terms && companyDetails.terms.trim() !== "" && (
-            <View style={{ marginBottom: 10, textAlign: "center" }}>
-              <Text style={{ fontWeight: "bold", fontSize: 12, marginBottom: 4, textAlign: "center" }}>
+            <View style={styles.termsSection}>
+              <Text style={{ fontWeight: "bold", fontSize: 12, marginBottom: 4, textAlign: "left" }}>
                 Terms & Conditions
               </Text>
-              <Text style={{ fontSize: 10, textAlign: "center" }}>
-                {companyDetails.terms.split("\\n").map((line, idx) => (
-                  <Text key={idx} style={{ textAlign: "center" }}>
+              <Text style={{ fontSize: 10, textAlign: "left" }}>
+                {companyDetails.terms.split("\n").map((line, idx) => (
+                  <Text key={idx} style={{ textAlign: "left" }}>
                     {line}
                     {"\n"}
                   </Text>

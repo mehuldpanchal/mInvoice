@@ -91,7 +91,6 @@ const BillToForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
           <input
             type="email"
             {...register("email", {
-              required: "Email is required",
               pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
             })}
             className="block w-full border rounded px-3 py-2"

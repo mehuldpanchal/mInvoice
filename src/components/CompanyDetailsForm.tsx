@@ -14,6 +14,7 @@ export interface CompanyDetails {
   email: string;
   invoiceNumber: string;
   terms: string;
+  invoiceDate: string;
 }
 
 export type CompanyDetailsData = Omit<CompanyDetails, 'logo'> & {
@@ -32,7 +33,10 @@ const CompanyDetailsForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
     formState: { errors },
     watch,
   } = useForm<CompanyDetails>({
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      invoiceDate: defaultValues?.invoiceDate || new Date().toISOString().substring(0, 10),
+    },
     mode: "onTouched",
   });
 
@@ -78,6 +82,15 @@ const CompanyDetailsForm: React.FC<Props> = ({ defaultValues, onSubmit }) => {
           className="block w-full border rounded px-3 py-2"
         />
         {errors.companyAddress && <span className="text-red-500 text-xs">{errors.companyAddress.message}</span>}
+      </div>
+      <div>
+        <label className="block font-medium mb-1">Invoice Date</label>
+        <input
+          type="date"
+          {...register("invoiceDate", { required: "Invoice Date is required" })}
+          className="block w-full border rounded px-3 py-2"
+        />
+        {errors.invoiceDate && <span className="text-red-500 text-xs">{errors.invoiceDate.message}</span>}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
